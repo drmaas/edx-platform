@@ -16,7 +16,7 @@
             initialize: function(options) {
                 this.course_settings = options.course_settings;
                 this.currentTopicId = options.topicId;
-                this.maxNameWidth = 100;
+                this.maxNameWidth = 26;
                 _.bindAll(this,
                     'toggleTopicDropdown', 'handleTopicEvent', 'hideTopicDropdown', 'ignoreClick'
                 );
@@ -147,44 +147,20 @@
             },
 
             // @TODO move into utils.coffee
-            getNameWidth: function(name) {
-                var test = $('<div>'),
-                    width;
-
-                test.css({
-                    'font-size': this.dropdownButton.css('font-size'),
-                    'opacity': 0,
-                    'position': 'absolute',
-                    'left': -1000,
-                    'top': -1000
-                }).html(name).appendTo(document.body);
-                width = test.width();
-                test.remove();
-                return width;
-            },
-
-            // @TODO move into utils.coffee
             fitName: function(name) {
                 var ellipsisText = gettext('…'),
                     partialName, path, rawName;
 
-                if (this.getNameWidth(name) < this.maxNameWidth) {
+                if (name.length < this.maxNameWidth) {
                     return name;
                 } else {
                     path = _.map(name.split('/'), function(item){
                         return item.replace(/^\s+|\s+$/g, '');
                     });
-                    while (path.length > 1) {
-                        path.shift();
-                        partialName = ellipsisText + ' / ' + path.join(' / ');
-                        if (this.getNameWidth(partialName) < this.maxNameWidth) {
-                          return partialName;
-                        }
-                    }
                     rawName = path[0];
                     name = ellipsisText + ' / ' + rawName;
-                    while (this.getNameWidth(name) > this.maxNameWidth) {
-                      rawName = rawName.slice(0, -1);
+                    if (name.length > this.maxNameWidth) {
+                      rawName = rawName.slice(0, this.maxNameWidth);
                       name = ellipsisText + ' / ' + rawName + ' ' + ellipsisText;
                     }
                 }

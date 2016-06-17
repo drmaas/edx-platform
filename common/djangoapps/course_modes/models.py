@@ -109,6 +109,14 @@ class CourseMode(models.Model):
         )
     )
 
+    course_mode_config = models.ForeignKey(
+        'CourseModeConfig',
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name=_("Course Mode Config")
+    )
+
     HONOR = 'honor'
     PROFESSIONAL = 'professional'
     VERIFIED = "verified"
@@ -700,3 +708,33 @@ class CourseModeExpirationConfig(ConfigurationModel):
     def __unicode__(self):
         """ Returns the unicode date of the verification window. """
         return unicode(self.verification_window)
+
+
+class CourseModeConfig(models.Model):
+    """
+    Configure course mode type capabilites.
+    """
+    class Meta(object):
+        app_label = "course_modes"
+
+    name = models.CharField(max_length=100)
+
+    # The 'pretty' name that can be translated and displayed
+    display_name = models.CharField(max_length=255)
+
+    certificate = models.BooleanField(default=False, verbose_name=_("Certificate"))
+
+    id_verification = models.BooleanField(default=False, verbose_name=_("ID Verification"))
+
+    upsell_course_mode = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        default=None,
+        # Translators: this label indicates the course_mode config which this course_mode config can progress to:
+        verbose_name=_("Upsell Course Mode Config"),
+    )
+
+    credit_eligible = models.BooleanField(default=False, verbose_name=_("Credit Eligible"))
+
+    cohort = models.BooleanField(default=False, verbose_name=_("Cohort"))

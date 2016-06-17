@@ -977,6 +977,13 @@ class CourseEnrollment(models.Model):
     # list of possible values.
     mode = models.CharField(default=CourseMode.DEFAULT_MODE_SLUG, max_length=100)
 
+    course_mode = models.ForeignKey(
+        CourseMode,
+        null=True,
+        blank=True,
+        verbose_name=_("Course Mode")
+    )
+
     objects = CourseEnrollmentManager()
 
     # Maintain a history of requirement status updates for auditing purposes
